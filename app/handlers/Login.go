@@ -1,15 +1,12 @@
-
 package handlers
 
-
-import(
+import (
+	jwt "app/jwt_token"
 	"net/http"
 	"time"
-	"app/jwt"
 )
 
-
-func loginHandler(w http.ResponseWriter, r *http.Request) {
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	login := r.URL.Query().Get("login")
 
 	if login == "" {
@@ -17,7 +14,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := jwt.GenerateToken(login, 24*time.Hour)
+	token, err := jwt.GenerateToken(login, "user", 24*time.Hour)
 
 	if err != nil {
 		http.Error(w, "Ошибка генерации токена", http.StatusInternalServerError)
