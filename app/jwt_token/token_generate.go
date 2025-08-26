@@ -1,17 +1,18 @@
 package jwt
 
 import (
+	"app/logger"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var Secret_key = []byte("12345qwert")
-
 func GenerateToken(login, role string, ttl time.Duration) (string, error) {
 	now := time.Now()
 
-	return generateTokenClaims(CustomClaims{
+	logger.Log.Infof("Генерация токена для пользователя: %s с ролью: %s", login, role)
+
+	token, err := generateTokenClaims(CustomClaims{
 		Login: login,
 		Role:  role,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -20,6 +21,13 @@ func GenerateToken(login, role string, ttl time.Duration) (string, error) {
 			NotBefore: jwt.NewNumericDate(now),
 		},
 	})
+
+	if err != nil {
+		logger.Log.Errorf("Ошибка при генерации токена: %v", err)
+		return "", err
+	}
+	logger.Log.Debugf("Сгенерированный токен: %s", token)
+	return token, nil
 
 }
 
