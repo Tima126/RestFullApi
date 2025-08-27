@@ -8,15 +8,30 @@ services:
       - POSTGRES_PASSWORD=12345
       - POSTGRES_DB=restapi_db
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data  
 
   migrate:
     image: migrate/migrate
     container_name: restapi_migrate
-    command: ["-path", "/migrations", "-database", "postgres://admin:12345@db:5432/restapi_db?sslmode=disable", "up"]
     volumes:
       - ./migrations:/migrations
     depends_on:
       - db
+
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: restapi_api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_DSN=postgres://admin:12345@db:5432/restapi_db?sslmode=disable
+    depends_on:
+      - db
+    command: ["./server"]
+volumes:
+  restapi_db_data:

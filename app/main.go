@@ -1,21 +1,21 @@
 package main
 
 import (
-	"app/handlers"
-	"app/logger"
-	"app/middleware"
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
+	// DSN берём из env
+	dsn := os.Getenv("DB_DSN")
+	fmt.Println("Using DSN:", dsn)
 
-	logger.Init()
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello from Go server! DSN: %s", dsn)
+	})
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/login", handlers.LoginHandler)
-	mux.Handle("/profile", middleware.JWTMiddleware((http.HandlerFunc(handlers.ProfileHandler))))
-
-	logger.Log.Info("Сервер запущен на порту 8080")
-	http.ListenAndServe(":8080", mux)
-
+	log.Println("Server started on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
