@@ -108,3 +108,58 @@ docker-compose up -d       # поднять контейнер
 ```
 
 
+
+
+
+``` go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+func main() {
+
+	dsn := "postgres://admin:12345@localhost:5434/restapi_db?sslmode=disable"
+	fmt.Println("Using DSN:", dsn)
+
+	pool, err := pgxpool.New(context.Background(), dsn)
+
+	if err != nil {
+		log.Fatalf("Unable to connect to database: %v\n", err)
+	}
+	defer pool.Close()
+
+	rows, err := pool.Query(context.Background(), "SELECT id, login, role_id FROM users")
+	if err != nil {
+		log.Fatalf("Query failed: %v\n", err)
+	}
+
+	log.Print("Users:")
+
+	for rows.Next() {
+		var id int
+		var login string
+		var role_id int
+		err := rows.Scan(&id, &login, &role_id)
+		if err != nil {
+			log.Fatalf("Row scan failed: %v\n", err)
+		}
+
+		fmt.Printf("ID: %d | Login: %s | Role_id: %d \n", id, login, role_id)
+	}
+
+	if rows.Err() != nil {
+		log.Fatalf("Row iteration error: %v\n", rows.Err())
+	}
+
+	defer rows.Close()
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```

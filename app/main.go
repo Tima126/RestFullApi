@@ -1,21 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"app/db"
+	"app/logger"
+	"app/routes"
 	"net/http"
-	"os"
 )
 
 func main() {
-	// DSN берём из env
-	dsn := os.Getenv("DB_DSN")
-	fmt.Println("Using DSN:", dsn)
+	logger.Init()
+	r := routes.RegisterRoutes()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello from Go server! DSN: %s", dsn)
-	})
-
-	log.Println("Server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	logger.Log.Info("Сервер запущен на :8080")
+	db.Init()
+	http.ListenAndServe(":8080", r)
 }

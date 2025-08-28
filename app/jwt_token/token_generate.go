@@ -7,14 +7,12 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateToken(login, role string, ttl time.Duration) (string, error) {
+func GenerateToken(user_id int, role int, ttl time.Duration) (string, error) {
 	now := time.Now()
 
-	logger.Log.Infof("Генерация токена для пользователя: %s с ролью: %s", login, role)
-
 	token, err := generateTokenClaims(CustomClaims{
-		Login: login,
-		Role:  role,
+		UserID: user_id,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(ttl)),
 			IssuedAt:  jwt.NewNumericDate(now),
