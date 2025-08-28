@@ -37,14 +37,14 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := models.User{
-		Login:    req.Login,
-		Password: string(hash),
-		Role_id:  1,
+		Login:     req.Login,
+		Password:  string(hash),
+		User_Role: "user",
 	}
 
 	err = db.Pool.QueryRow(context.Background(),
-		"INSERT INTO users (login, password, role_id) VALUES ($1, $2, $3) RETURNING id",
-		user.Login, user.Password, user.Role_id).Scan(&user.ID)
+		"INSERT INTO users (login, password, user_role) VALUES ($1, $2, $3) RETURNING id",
+		user.Login, user.Password, user.User_Role).Scan(&user.ID)
 	if err != nil {
 		logger.Log.Errorf("Ошибка создания пользователя %s: %v", req.Login, err)
 		http.Error(w, "Error creating user", http.StatusInternalServerError)
@@ -54,7 +54,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Log.Infof("Пользователь %s успешно создан с ID %d", req.Login, user.ID)
 
 	tokenTTL := 24 * time.Hour
-	token, err := jwt.GenerateToken(user.ID, user.Role_id, tokenTTL)
+	token, err := jwt.GenerateToken(user.ID, user.User_Role, tokenTTL)
 	if err != nil {
 		logger.Log.Errorf("Ошибка генерации токена для пользователя %s: %v", req.Login, err)
 		http.Error(w, "Error generating token", http.StatusInternalServerError)

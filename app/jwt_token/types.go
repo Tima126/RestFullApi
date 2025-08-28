@@ -6,7 +6,7 @@ var Secret_key = []byte("12345qwert")
 
 // Общий тип Claims -> jwt
 type CustomClaims struct {
-	UserID int `json:"user_id"`
-	Role   int `json:"role,omitempty"`
+	UserID int    `json:"user_id"`
+	Role   string `json:"role,omitempty"`
 	jwt.RegisteredClaims
 }

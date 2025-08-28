@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateToken(user_id int, role int, ttl time.Duration) (string, error) {
+func GenerateToken(user_id int, role string, ttl time.Duration) (string, error) {
 	now := time.Now()
 
 	token, err := generateTokenClaims(CustomClaims{
