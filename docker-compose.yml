@@ -30,6 +30,7 @@ services:
       - "8080:8080"
     environment:
       - DB_DSN=postgres://admin:12345@db:5432/restapi_db?sslmode=disable
+      - APP_ENV=dev
     depends_on:
       - db
     command: ["./server"]

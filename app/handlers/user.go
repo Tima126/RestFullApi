@@ -8,6 +8,7 @@ import (
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 	login := r.Context().Value("user")
+
 	if login == nil {
 		http.Error(w, "пользователь не найден в контексте", http.StatusUnauthorized)
 		return

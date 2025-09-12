@@ -7,9 +7,11 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// метод генерации токена
 func GenerateToken(user_id int, role string, ttl time.Duration) (string, error) {
 	now := time.Now()
 
+	// создание токена с пользовательскими клеймами
 	token, err := generateTokenClaims(CustomClaims{
 		UserID: user_id,
 		Role:   role,
@@ -29,6 +31,7 @@ func GenerateToken(user_id int, role string, ttl time.Duration) (string, error) 
 
 }
 
+// вспомогательная функция для генерации токена с клеймами
 func generateTokenClaims(claims CustomClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(Secret_key)

@@ -6,9 +6,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Log - глобальный логгер
 var Log = logrus.New()
 
+// Init - инициализация логгера
 func Init() {
+	// установка уровня логирования и форматирования
 	env := os.Getenv("APP_ENV")
 	Log.SetLevel(logrus.DebugLevel)
 
@@ -18,6 +21,7 @@ func Init() {
 		ForceColors:     true,
 	})
 
+	// установка уровня логирования в зависимости от окружения
 	switch env {
 	case "dev":
 		{
