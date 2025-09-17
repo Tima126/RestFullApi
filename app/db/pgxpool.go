@@ -6,22 +6,18 @@ pool соединение с постгресс, строка подключен
 ***********************************************************/
 
 import (
+	"app/config"
 	"app/logger"
 	"context"
-	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var Pool *pgxpool.Pool
 
-func Init() {
+func Init(cfg *config.Config) {
 
-	dsn := os.Getenv("DB_DSN")
-
-	if dsn == "" {
-		logger.Log.Fatal("DB_DSN environment variable is not set")
-	}
+	dsn := cfg.DB_DSN
 
 	var err error
 	Pool, err = pgxpool.New(context.Background(), dsn)

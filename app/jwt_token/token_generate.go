@@ -8,11 +8,11 @@ import (
 )
 
 // метод генерации токена
-func GenerateToken(user_id int, role string, ttl time.Duration) (string, error) {
+func (s *JWTService) GenerateToken(user_id int, role string, ttl time.Duration) (string, error) {
 	now := time.Now()
 
 	// создание токена с пользовательскими клеймами
-	token, err := generateTokenClaims(CustomClaims{
+	token, err := s.generateTokenClaims(CustomClaims{
 		UserID: user_id,
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -32,7 +32,7 @@ func GenerateToken(user_id int, role string, ttl time.Duration) (string, error) 
 }
 
 // вспомогательная функция для генерации токена с клеймами
-func generateTokenClaims(claims CustomClaims) (string, error) {
+func (s *JWTService) generateTokenClaims(claims CustomClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(Secret_key)
+	return token.SignedString([]byte(s.Secret))
 }

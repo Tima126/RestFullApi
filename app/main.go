@@ -1,17 +1,29 @@
 package main
 
 import (
+	"app/config"
 	"app/db"
+	jwt "app/jwt_token"
 	"app/logger"
 	"app/routes"
 	"net/http"
 )
 
 func main() {
-	logger.Init()
-	r := routes.RegisterRoutes()
+	// загрузка конфигурации
+	cfg := config.LoadConfig()
 
-	logger.Log.Info("Сервер запущен на :8080")
-	db.Init()
-	http.ListenAndServe(":8080", r)
+	// инициализация логгера и базы данных
+	logger.Init(cfg)
+	db.Init(cfg)
+
+	// инициализация JWT сервиса
+	jwtService := jwt.NewJWTService(cfg)
+
+	// регистрация роутов
+	r := routes.RegisterRoutes(jwtService)
+
+	logger.Log.Infof("Сервер запущен на :%s", cfg.AppPort)
+	logger.Log.Fatal(http.ListenAndServe(":"+cfg.AppPort, r))
+
 }

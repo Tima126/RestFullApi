@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"app/config"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -10,10 +11,9 @@ import (
 var Log = logrus.New()
 
 // Init - инициализация логгера
-func Init() {
+func Init(cfg *config.Config) {
 	// установка уровня логирования и форматирования
-	env := os.Getenv("APP_ENV")
-	Log.SetLevel(logrus.DebugLevel)
+	env := cfg.AppEnv
 
 	Log.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp:   true,

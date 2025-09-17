@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// метод извлечения токена из заголовка Authorization
 func ExtractTokenFromHeader(r *http.Request) (string, error) {
 	token := r.Header.Get("Authorization")
 

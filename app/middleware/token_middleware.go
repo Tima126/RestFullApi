@@ -12,7 +12,7 @@ const userCtxKey = contextKey("user")
 const roleCtxKey = contextKey("role")
 
 // JWTMiddleware - middleware для проверки JWT токена
-func JWTMiddleware(next http.Handler) http.Handler {
+func JWTMiddleware(jwtService *jwt.JWTService, next http.Handler) http.Handler {
 
 	// возврат анонимной функции-обработчика
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -24,8 +24,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 		}
 
 		// парсинг токена на клеймы
-		claims, err := jwt.ParseToken(tokenString)
-
+		claims, err := jwtService.ParseToken(tokenString)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return

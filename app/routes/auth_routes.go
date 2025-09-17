@@ -2,10 +2,12 @@ package routes
 
 import (
 	"app/handlers/auth"
+	jwt "app/jwt_token"
 
 	"github.com/go-chi/chi/v5"
 )
 
-func AuthRoutes(r chi.Router) {
-	r.Post("/login", auth.RegisterHandler)
+// регистрация маршрутов аутентификации
+func AuthRoutes(r chi.Router, jwtService *jwt.JWTService) {
+	r.Post("/api/login", auth.RegisterHandler(jwtService))
 }

@@ -1,12 +1,16 @@
 package routes
 
-import "github.com/go-chi/chi/v5"
+import (
+	jwt "app/jwt_token"
 
-func RegisterRoutes() *chi.Mux {
+	"github.com/go-chi/chi/v5"
+)
+
+func RegisterRoutes(jwtService *jwt.JWTService) *chi.Mux {
 	r := chi.NewRouter()
 
-	AuthRoutes(r)
-	UserRoutes(r)
+	AuthRoutes(r, jwtService)
+	UserRoutes(r, jwtService)
 
 	return r
 }
