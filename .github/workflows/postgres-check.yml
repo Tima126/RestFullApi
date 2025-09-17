@@ -1,4 +1,4 @@
-name: Check Postgres
+name: Test Postgres DB
 
 on:
   push:
@@ -37,6 +37,10 @@ jobs:
           done
           echo "Postgres is ready!"
 
-      - name: Test connection
+      - name: Create tables
         run: |
-          PGPASSWORD=12345 psql -h localhost -U admin -d restapi_db -c '\l'
+          PGPASSWORD=12345 psql -h localhost -U admin -d restapi_db -f migrations/0001_create_users_table.up.sql
+
+      - name: Check tables
+        run: |
+          PGPASSWORD=12345 psql -h localhost -U admin -d restapi_db -c '\dt'
