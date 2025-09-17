@@ -44,3 +44,20 @@ jobs:
       - name: Check tables
         run: |
           PGPASSWORD=12345 psql -h localhost -U admin -d restapi_db -c '\dt'
+
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: postgres-test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Run tests
+        run: go test ./... -v
+
+
