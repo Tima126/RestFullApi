@@ -9,5 +9,6 @@ import (
 
 // регистрация маршрутов аутентификации
 func AuthRoutes(r chi.Router, jwtService *jwt.JWTService) {
-	r.Post("/api/login", auth.RegisterHandler(jwtService))
+	r.Post("/api/register", auth.RegisterHandler(jwtService))
+	r.Post("/api/login", auth.LoginHandler(jwtService))
 }

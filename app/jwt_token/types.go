@@ -17,6 +17,8 @@ func NewJWTService(cfg *config.Config) *JWTService {
 // структура для пользовательских клеймов
 type CustomClaims struct {
 	UserID int    `json:"user_id"`
+	Login  string `json:"login"`
 	Role   string `json:"role,omitempty"`
+
 	jwt.RegisteredClaims
 }

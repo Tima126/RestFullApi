@@ -1,4 +1,4 @@
-package login
+package auth
 
 import (
 	"app/db"
@@ -56,7 +56,7 @@ func LoginHandler(jwtService *jwt.JWTService) http.HandlerFunc {
 
 		tokenTTL := 24 * time.Hour
 
-		token, err := jwtService.GenerateToken(UserID, "user", tokenTTL)
+		token, err := jwtService.GenerateToken(UserID, Login, "user", tokenTTL)
 
 		if err != nil {
 			logger.Log.Errorf("Ошибка генерации токена для пользователя %s: %v", req.Login, err)

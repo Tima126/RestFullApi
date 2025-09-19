@@ -63,7 +63,7 @@ func RegisterHandler(jwtService *jwt.JWTService) http.HandlerFunc {
 
 		// --- Генерация токена через JWTService ---
 		tokenTTL := 24 * time.Hour
-		token, err := jwtService.GenerateToken(user.ID, user.User_Role, tokenTTL)
+		token, err := jwtService.GenerateToken(user.ID, user.Login, user.User_Role, tokenTTL)
 		if err != nil {
 			logger.Log.Errorf("Ошибка генерации токена для пользователя %s: %v", req.Login, err)
 			http.Error(w, "Error generating token", http.StatusInternalServerError)

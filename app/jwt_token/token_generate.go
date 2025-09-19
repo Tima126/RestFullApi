@@ -8,13 +8,14 @@ import (
 )
 
 // метод генерации токена
-func (s *JWTService) GenerateToken(user_id int, role string, ttl time.Duration) (string, error) {
+func (s *JWTService) GenerateToken(user_id int, login string, role string, ttl time.Duration) (string, error) {
 	now := time.Now()
 
 	// создание токена с пользовательскими клеймами
 	token, err := s.generateTokenClaims(CustomClaims{
 		UserID: user_id,
 		Role:   role,
+		Login:  login,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(ttl)),
 			IssuedAt:  jwt.NewNumericDate(now),

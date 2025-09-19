@@ -23,7 +23,7 @@ func main() {
 	// регистрация роутов
 	r := routes.RegisterRoutes(jwtService)
 
-	logger.Log.Infof("Сервер запущен на :%s", cfg.AppPort)
-	logger.Log.Fatal(http.ListenAndServe(":"+cfg.AppPort, r))
+	logger.Log.Infof("Сервер запущен на :%s", cfg.APP_PORT)
+	logger.Log.Fatal(http.ListenAndServe(":"+cfg.APP_PORT, r))
 
 }

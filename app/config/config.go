@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -10,20 +11,21 @@ type Config struct {
 	AppEnv     string
 	DB_DSN     string
 	JWT_Secret string
-	AppPort    string
+	APP_PORT   string
 }
 
 func LoadConfig() *Config {
 
-	_ = godotenv.Load()
+	_ = godotenv.Load(".env.local")
 
 	cfg := &Config{
-		AppEnv:     getEnv("APP_ENV", "dev"),
-		DB_DSN:     getEnv("DB_DSN", "postgres://admin:12345@localhost:5434/restapi_db?sslmode=disable"),
-		JWT_Secret: getEnv("JWT_SECRET", "supersecret"),
-		AppPort:    getEnv("APP_PORT", "8080"),
+		AppEnv:     getEnv("APP_ENV", ""),
+		DB_DSN:     getEnv("DB_DSN", ""),
+		JWT_Secret: getEnv("JWT_SECRET", ""),
+		APP_PORT:   getEnv("APP_PORT", ""),
 	}
 
+	log.Printf("Конфигурация загружена: %+v\n", cfg)
 	return cfg
 }
 

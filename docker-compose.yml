@@ -29,7 +29,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - app/config/.env.docker
+      - .env.docker
     depends_on:
       - db
     command: ["./server"]

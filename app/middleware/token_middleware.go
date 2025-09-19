@@ -8,33 +8,28 @@ import (
 
 type contextKey string
 
-const userCtxKey = contextKey("user")
-const roleCtxKey = contextKey("role")
+const UserCtxKey = contextKey("user")
+const RoleCtxKey = contextKey("role")
 
-// JWTMiddleware - middleware для проверки JWT токена
-func JWTMiddleware(jwtService *jwt.JWTService, next http.Handler) http.Handler {
+func JWTMiddleware(jwtService *jwt.JWTService) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			tokenString, err := jwt.ExtractTokenFromHeader(r)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+				return
+			}
 
-	// возврат анонимной функции-обработчика
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tokenString, err := jwt.ExtractTokenFromHeader(r)
+			claims, err := jwtService.ParseToken(tokenString)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+				return
+			}
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		}
+			ctx := context.WithValue(r.Context(), UserCtxKey, claims.Login)
+			ctx = context.WithValue(ctx, RoleCtxKey, claims.Role)
 
-		// парсинг токена на клеймы
-		claims, err := jwtService.ParseToken(tokenString)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), userCtxKey, claims.UserID)
-
-		ctx = context.WithValue(r.Context(), roleCtxKey, claims.Role)
-		next.ServeHTTP(w, r.WithContext(ctx))
-
-	})
-
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
 }
