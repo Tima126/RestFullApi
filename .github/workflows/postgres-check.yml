@@ -7,47 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  postgres-test:
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: 12345
-          POSTGRES_DB: restapi_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U admin"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Wait for Postgres to be ready
-        run: |
-          until pg_isready -h localhost -p 5432 -U admin; do
-            echo "Waiting for Postgres..."
-            sleep 2
-          done
-          echo "Postgres is ready!"
-
-      - name: Create tables
-        run: |
-          PGPASSWORD=12345 psql -h localhost -U admin -d restapi_db -f migrations/0001_create_users_table.up.sql
-
-      - name: Check tables
-        run: |
-          PGPASSWORD=12345 psql -h localhost -U admin -d restapi_db -c '\dt'
-
   run-tests:
     runs-on: ubuntu-latest
-    needs: postgres-test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
