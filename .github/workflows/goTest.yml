@@ -23,9 +23,11 @@ jobs:
         run: go test ./... -v -mod=vendor
 
       - name: Run goseq (SAST)
+        working-directory: ./app
         run: |
           go install github.com/securego/gosec/v2/cmd/gosec@v2.20.0
           gosec -fmt=json -out=goseq-report.json ./...
+          
       - name: Upload gosec report
         uses: actions/upload-artifact@v4
         with:
